@@ -30,8 +30,7 @@ lab: venv
 test: venv
 	(. venv/bin/activate; \
 		python setup.py install; \
-		venv/bin/coverage run -m pytest test; \
-		venv/bin/coverage report -m --fail-under 95; \
+		venv/bin/coverage run -m pytest -o log_cli=true test; \
 	)
 
 .PHONY: docs

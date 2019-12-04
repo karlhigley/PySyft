@@ -7,9 +7,15 @@ Tensorflow, etc.).
 All Syft message types extend the Message class.
 """
 
+import logging
+from collections import defaultdict
+
 import syft as sy
 from syft.workers.abstract import AbstractWorker
 
+logger = logging.getLogger(__name__)
+
+operations_seen = defaultdict(list)
 
 class Message:
     """All syft message types extend this class
@@ -125,6 +131,31 @@ class Operation(Message):
 
         # call the parent constructor - setting the type integer correctly
         super().__init__()
+
+        # Parse out the types of the arguments
+        arg_types = []
+        for arg in message[1:]:
+            # Expand out the contents of tuples and dicts
+            if isinstance(arg, tuple):
+                arg_contents = []
+                for inner_arg in arg:
+                    arg_contents.append(type(inner_arg))
+                if arg_contents:
+                    arg_types.append( tuple([tuple, arg_contents]) )
+            elif isinstance(arg, dict):
+                arg_contents = []
+                for key, value in arg.items():
+                    arg_contents.append( tuple([key, type(value)]) )
+                if arg_contents:
+                    arg_types.append( tuple([dict, arg_contents]) )
+            else:
+                arg_types.append( tuple([type(arg)]) )
+
+        # Track the message names/types and only log new messages
+        operation_name = message[0]
+        if (arg_types not in operations_seen[operation_name]):
+            logger.warn("%s %s", str(message[0]), str(arg_types))
+            operations_seen[operation_name].append(arg_types)
 
         self.message = message
         self.return_ids = return_ids
