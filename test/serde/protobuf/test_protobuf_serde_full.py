@@ -13,8 +13,12 @@ from test.serde.serde_helpers import *
 # Dictionary containing test samples functions
 samples = OrderedDict()
 
-# Native
+# Python Native
 samples[type(None)] = make_none
+# Other native Python types are not supported with Protobuf
+
+# Numpy
+# Not supported with Protobuf
 
 # PyTorch
 samples[torch.device] = make_torch_device
@@ -24,20 +28,58 @@ samples[torch.jit.TopLevelTracedModule] = make_torch_topleveltracedmodule
 samples[torch.nn.Parameter] = make_torch_parameter
 samples[torch.Tensor] = make_torch_tensor
 samples[torch.Size] = make_torch_size
+# samples[torch.memory_format] = make_torch_memoryformat
 
 # PySyft
+# samples[syft.federated.train_config.TrainConfig] = make_trainconfig
+# samples[syft.generic.string.String] = make_string
+# samples[syft.workers.base.BaseWorker] = make_baseworker
+# Dynamically added to msgpack.serde.simplifiers by some other test
+# samples[syft.workers.virtual.VirtualWorker] = make_baseworker
+
+# PySyft Pointers and Wrappers
+# samples[syft.generic.pointers.multi_pointer.MultiPointerTensor] = make_multipointertensor
+# samples[syft.generic.pointers.object_wrapper.ObjectWrapper] = make_objectwrapper
+# samples[syft.generic.pointers.object_pointer.ObjectPointer] = make_objectpointer
+samples[syft.generic.pointers.pointer_tensor.PointerTensor] = make_pointertensor
+# samples[syft.generic.pointers.pointer_plan.PointerPlan] = make_pointerplan
+# samples[syft.generic.pointers.pointer_protocol.PointerProtocol] = make_pointerprotocol
+
+# PySyft Torch Tensor Interpreters and Decorators
+# samples[syft.frameworks.torch.tensors.decorators.logging.LoggingTensor] = make_loggingtensor
 samples[
     syft.frameworks.torch.tensors.interpreters.additive_shared.AdditiveSharingTensor
 ] = make_additivesharingtensor
+# samples[syft.frameworks.torch.tensors.interpreters.autograd.AutogradTensor] = make_autogradtensor
+# samples[
+#     syft.frameworks.torch.tensors.interpreters.crt_precision.CRTPrecisionTensor
+# ] = make_crtprecisiontensor
+# samples[
+#     syft.frameworks.torch.tensors.interpreters.precision.FixedPrecisionTensor
+# ] = make_fixedprecisiontensor
+# samples[syft.frameworks.torch.tensors.interpreters.gradients_core.GradFunc] = make_gradfn
+# samples[syft.frameworks.torch.tensors.interpreters.private.PrivateTensor] = make_privatetensor
 samples[syft.frameworks.torch.tensors.interpreters.placeholder.PlaceHolder] = make_placeholder
-samples[syft.messaging.plan.Plan] = make_plan
-samples[syft.generic.pointers.pointer_tensor.PointerTensor] = make_pointertensor
-samples[syft.messaging.protocol.Protocol] = make_protocol
-samples[syft.messaging.plan.state.State] = make_state
 
-# Syft Messages
-samples[syft.messaging.message.ObjectMessage] = make_objectmessage
+# PySyft Messaging
+samples[syft.messaging.plan.plan.Plan] = make_plan
+samples[syft.messaging.plan.state.State] = make_state
+samples[syft.messaging.protocol.Protocol] = make_protocol
+
+# PySyft Messages
+# samples[syft.messaging.message.Message] = make_message
 samples[syft.messaging.message.Operation] = make_operation
+samples[syft.messaging.message.ObjectMessage] = make_objectmessage
+# samples[syft.messaging.message.ObjectRequestMessage] = make_objectrequestmessage
+# samples[syft.messaging.message.IsNoneMessage] = make_isnonemessage
+# samples[syft.messaging.message.GetShapeMessage] = make_getshapemessage
+# samples[syft.messaging.message.ForceObjectDeleteMessage] = make_forceobjectdeletemessage
+# samples[syft.messaging.message.SearchMessage] = make_searchmessage
+# samples[syft.messaging.message.PlanCommandMessage] = make_plancommandmessage
+
+# PySyft Exceptions
+# samples[syft.exceptions.GetNotPermittedError] = make_getnotpermittederror
+# samples[syft.exceptions.ResponseSignatureError] = make_responsesignatureerror
 
 
 def test_serde_coverage():

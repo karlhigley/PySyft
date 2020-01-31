@@ -13,7 +13,7 @@ from test.serde.serde_helpers import *
 # Dictionary containing test samples functions
 samples = OrderedDict()
 
-# Native
+# Python Native
 samples[float] = make_float
 samples[int] = make_int
 samples[dict] = make_dict
@@ -43,32 +43,42 @@ samples[torch.Size] = make_torch_size
 samples[torch.memory_format] = make_torch_memoryformat
 
 # PySyft
-samples[
-    syft.frameworks.torch.tensors.interpreters.additive_shared.AdditiveSharingTensor
-] = make_additivesharingtensor
-samples[
-    syft.frameworks.torch.tensors.interpreters.precision.FixedPrecisionTensor
-] = make_fixedprecisiontensor
-samples[
-    syft.frameworks.torch.tensors.interpreters.crt_precision.CRTPrecisionTensor
-] = make_crtprecisiontensor
-samples[syft.frameworks.torch.tensors.decorators.logging.LoggingTensor] = make_loggingtensor
+samples[syft.federated.train_config.TrainConfig] = make_trainconfig
+samples[syft.generic.string.String] = make_string
+samples[syft.workers.base.BaseWorker] = make_baseworker
+# Dynamically added to msgpack.serde.simplifiers by some other test
+samples[syft.workers.virtual.VirtualWorker] = make_baseworker
+
+# PySyft Pointers and Wrappers
 samples[syft.generic.pointers.multi_pointer.MultiPointerTensor] = make_multipointertensor
-samples[syft.messaging.plan.plan.Plan] = make_plan
-samples[syft.messaging.plan.state.State] = make_state
-samples[syft.messaging.protocol.Protocol] = make_protocol
+samples[syft.generic.pointers.object_wrapper.ObjectWrapper] = make_objectwrapper
+samples[syft.generic.pointers.object_pointer.ObjectPointer] = make_objectpointer
 samples[syft.generic.pointers.pointer_tensor.PointerTensor] = make_pointertensor
 samples[syft.generic.pointers.pointer_plan.PointerPlan] = make_pointerplan
 samples[syft.generic.pointers.pointer_protocol.PointerProtocol] = make_pointerprotocol
-samples[syft.generic.pointers.object_wrapper.ObjectWrapper] = make_objectwrapper
-samples[syft.generic.pointers.object_pointer.ObjectPointer] = make_objectpointer
-samples[syft.generic.string.String] = make_string
-samples[syft.federated.train_config.TrainConfig] = make_trainconfig
-samples[syft.workers.base.BaseWorker] = make_baseworker
+
+# PySyft Torch Tensor Interpreters and Decorators
+samples[syft.frameworks.torch.tensors.decorators.logging.LoggingTensor] = make_loggingtensor
+samples[
+    syft.frameworks.torch.tensors.interpreters.additive_shared.AdditiveSharingTensor
+] = make_additivesharingtensor
 samples[syft.frameworks.torch.tensors.interpreters.autograd.AutogradTensor] = make_autogradtensor
+samples[
+    syft.frameworks.torch.tensors.interpreters.crt_precision.CRTPrecisionTensor
+] = make_crtprecisiontensor
+samples[
+    syft.frameworks.torch.tensors.interpreters.precision.FixedPrecisionTensor
+] = make_fixedprecisiontensor
+samples[syft.frameworks.torch.tensors.interpreters.gradients_core.GradFunc] = make_gradfn
 samples[syft.frameworks.torch.tensors.interpreters.private.PrivateTensor] = make_privatetensor
 samples[syft.frameworks.torch.tensors.interpreters.placeholder.PlaceHolder] = make_placeholder
 
+# PySyft Messaging
+samples[syft.messaging.plan.plan.Plan] = make_plan
+samples[syft.messaging.plan.state.State] = make_state
+samples[syft.messaging.protocol.Protocol] = make_protocol
+
+# PySyft Messages
 samples[syft.messaging.message.Operation] = make_operation
 samples[syft.messaging.message.ObjectMessage] = make_objectmessage
 samples[syft.messaging.message.ObjectRequestMessage] = make_objectrequestmessage
@@ -78,13 +88,9 @@ samples[syft.messaging.message.ForceObjectDeleteMessage] = make_forceobjectdelet
 samples[syft.messaging.message.SearchMessage] = make_searchmessage
 samples[syft.messaging.message.PlanCommandMessage] = make_plancommandmessage
 
-samples[syft.frameworks.torch.tensors.interpreters.gradients_core.GradFunc] = make_gradfn
-
+# PySyft Exceptions
 samples[syft.exceptions.GetNotPermittedError] = make_getnotpermittederror
 samples[syft.exceptions.ResponseSignatureError] = make_responsesignatureerror
-
-# Dynamically added to msgpack.serde.simplifiers by some other test
-samples[syft.workers.virtual.VirtualWorker] = make_baseworker
 
 
 def test_serde_coverage():
