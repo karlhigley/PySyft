@@ -7,7 +7,15 @@ from syft_proto.execution.v1.placeholder_pb2 import Placeholder as PlaceholderPB
 
 
 class PlaceHolder(AbstractTensor):
-    def __init__(self, role=None, owner=None, id=None, tags: set = None, description: str = None):
+    def __init__(
+        self,
+        role=None,
+        tracing=False,
+        owner=None,
+        id=None,
+        tags: set = None,
+        description: str = None,
+    ):
         """A PlaceHolder acts as a tensor but does nothing special. It can get
         "instantiated" when a real tensor is appended as a child attribute. It
         will send forward all the commands it receives to its child tensor.
@@ -25,6 +33,13 @@ class PlaceHolder(AbstractTensor):
             self.id = PlaceholderId(self.id)
         self.child = None
         self.role = role
+        self.tracing = tracing
+
+    def get_class_attributes(self):
+        """
+        Specify all the attributes need to build a wrapper correctly when returning a response.
+        """
+        return {"role": self.role, "tracing": self.tracing, "owner": self.owner}
 
     @classmethod
     def handle_func_command(cls, command):
