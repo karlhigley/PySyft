@@ -7,7 +7,7 @@ from syft_proto.execution.v1.placeholder_pb2 import Placeholder as PlaceholderPB
 
 
 class PlaceHolder(AbstractTensor):
-    def __init__(self, owner=None, id=None, tags: set = None, description: str = None):
+    def __init__(self, role=None, owner=None, id=None, tags: set = None, description: str = None):
         """A PlaceHolder acts as a tensor but does nothing special. It can get
         "instantiated" when a real tensor is appended as a child attribute. It
         will send forward all the commands it receives to its child tensor.
@@ -24,26 +24,7 @@ class PlaceHolder(AbstractTensor):
         if not isinstance(self.id, PlaceholderId):
             self.id = PlaceholderId(self.id)
         self.child = None
-
-    # TODO do we remove the tracing implementation if we trace plans here?
-
-    # def __getattribute__(self, name):
-    #     """ This method is called each time we want to access an attribute or call a method
-    #     of self.
-    #     We implement our tracing logic here.
-    #     """
-    #     attribute = object.__getattribute__(self, name)
-    #     if callable(attribute):
-    #         # Trace
-    #         print("tracing", attribute.__name__)
-    #     return attribute
-
-    def __add__(self, other):
-        print("tracing add")
-        # command = ('__add__', self.id, other.id, {})
-        ph = PlaceHolder()
-        res = self.child + other.child
-        return ph.instantiate(res)
+        self.role = role
 
     @classmethod
     def handle_func_command(cls, command):
